@@ -155,7 +155,7 @@ public class UserServiceImpl implements UserService {
     public void createRolesIfEmpty(){
         if (roleRepository.findAll().isEmpty()){
             logger.warn("Roles Db was empty");
-            List<String> roles = List.of("ADMIN","USER","CLIENT","EMPLOYEE","GUEST","MANAGER","TEAM_LEADER");
+            List<String> roles = List.of("ADMIN","RESTAURANT_MANAGER","CLIENT");
             for (int i = 0; i < roles.size(); i++) {
                 Role role = new Role();
                 role.setRole(roles.get(i));
@@ -189,7 +189,7 @@ public class UserServiceImpl implements UserService {
             role = roleRepository.findRoleByRole("ADMIN");
         }
         else {
-            role = roleRepository.findRoleByRole("USER");
+            role = roleRepository.findRoleByRole("CLIENT");
         }
         if (role.getUsers() == null) {
             Collection<User> userCollection = new ArrayList<>();

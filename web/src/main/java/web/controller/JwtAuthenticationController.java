@@ -1,5 +1,12 @@
-package backend.configuration.security.controller;
+package web.controller;
 
+import backend.configuration.security.config.JwtTokenUtil;
+import backend.configuration.security.model.JwtRequest;
+import backend.configuration.security.model.JwtResponse;
+import backend.configuration.security.service.JwtUserDetailsService;
+import backend.dto.UserDto;
+import backend.model.User;
+import backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
@@ -11,13 +18,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import backend.configuration.security.config.JwtTokenUtil;
-import backend.configuration.security.model.JwtRequest;
-import backend.configuration.security.model.JwtResponse;
-import backend.configuration.security.service.JwtUserDetailsService;
-import backend.dto.UserDto;
-import backend.model.User;
-import backend.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 
