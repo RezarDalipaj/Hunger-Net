@@ -7,6 +7,8 @@ import backend.dto.OrderStatusDto;
 import backend.model.*;
 import backend.repository.*;
 import backend.service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -34,6 +36,7 @@ public class OrderServiceImpl implements OrderService {
     private final RestaurantService restaurantService;
     private final StatusRepository statusRepository;
 
+    private final Logger logger = LoggerFactory.getLogger(RestaurantServiceImpl.class);
     public OrderServiceImpl(OrderRepository orderRepository
             , OrderStatusRepository orderStatusRepository
             , ItemService itemService, UserService userService
@@ -78,6 +81,7 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setStatus(status);
         }
         orderRepository.save(order);
+        logger.info("Deleted order with id " + id);
         return convertToOrderDto(order);
     }
     //orders of a user
@@ -146,6 +150,7 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setStatus(status);
         }
         orderRepository.save(order);
+        logger.info("Manager deleted order with id " + id);
         return convertToOrderDto(order);
     }
     //validating order update status
@@ -235,6 +240,7 @@ public class OrderServiceImpl implements OrderService {
                 orderItem.getItem().setInStock(orderItem.getItem().getInStock()-orderItem.getQuantity());
         }
         orderRepository.save(order);
+        logger.info("Order status updated");
         return convertToOrderDto(order);
     }
     @Override
@@ -306,6 +312,7 @@ public class OrderServiceImpl implements OrderService {
         order.setItemOrderList(orderItemList);
         order.setUser(user);
         order.setAmountPayed(amountPayed);
+        logger.info("Added new order");
         return order;
     }
     //validating items of the order
@@ -427,6 +434,7 @@ public class OrderServiceImpl implements OrderService {
         order.setItemOrderList(orderItemList);
         order.setUser(user);
         order.setAmountPayed(amountPayed);
+        logger.info("Updated order with id " + order.getOrder_id());
         return order;
     }
     private Double setOrderUpdate(Double amountPayed, Item item, OrderItem orderItem

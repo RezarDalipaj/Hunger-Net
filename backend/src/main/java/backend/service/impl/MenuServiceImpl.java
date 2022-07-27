@@ -9,6 +9,8 @@ import backend.repository.MenuTypeRepository;
 import backend.repository.StatusRepository;
 import backend.service.MenuService;
 import backend.service.RestaurantService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Lazy;
@@ -31,7 +33,7 @@ public class MenuServiceImpl implements MenuService {
     private final RestaurantService restaurantService;
     private final ItemServiceImpl itemService;
     private final StatusRepository statusRepository;
-
+    private final Logger logger = LoggerFactory.getLogger(RestaurantServiceImpl.class);
     public MenuServiceImpl(MenuRepository menuRepository, MenuTypeRepository menuTypeRepository
             , @Lazy RestaurantService restaurantService, @Lazy ItemServiceImpl itemService
             , StatusRepository statusRepository) {
@@ -137,6 +139,7 @@ public class MenuServiceImpl implements MenuService {
                 if (!menu.getStatus().getStatus().equals("DELETED")
                         &&!item.getStatus().getStatus().equals("DELETED")) {
                     itemService.deleteById(item.getId());
+                    logger.info("Deleting items from menu");
                     itemService.saveFromRepository(item);
                 }
             }
@@ -150,6 +153,7 @@ public class MenuServiceImpl implements MenuService {
         Status status = statusRepository.findStatusByStatus("DELETED");
         deleteItemsFromMenu(menu);
         menu.setStatus(status);
+        logger.info("Deleted menu with id " + id);
         menuRepository.save(menu);
     }
     @Override
@@ -162,6 +166,7 @@ public class MenuServiceImpl implements MenuService {
             menu.setStatus(status);
             menuRepository.save(menu);
         }
+        logger.info("Deleted all menus");
         return menuDtoList;
     }
     private void breakfastValidation(Menu menu, LocalTime localTime, Status valid, Status invalid){
@@ -212,6 +217,7 @@ public class MenuServiceImpl implements MenuService {
             afternoonValidation(menu,localTime,validStatus,invalidStatus);
         else if (menu.getMenuType().getMenuType().equals("DINNER"))
             dinnerValidation(menu,localTime,validStatus,invalidStatus);
+        logger.info("Menu validated");
         menuRepository.save(menu);
     }
     //saving or updating a menu
@@ -288,6 +294,7 @@ public class MenuServiceImpl implements MenuService {
         setMenuName(menu,menuDto);
         setMenuType(menuDto,menu);
         setMenuRestaurant(menu,menuDto);
+        logger.info("Added new menu");
         return menu;
         }
         private Menu convertDtoToMenuUpdate(MenuDto menuDto) throws Exception{
@@ -300,6 +307,7 @@ public class MenuServiceImpl implements MenuService {
                 setMenuType(menuDto, menu);
             if (menuDto.getRestaurant() != null)
                 setMenuRestaurant(menu, menuDto);
+            logger.info("Updated menu with id" + menuDto.getId());
             return menu;
         }
         @Override

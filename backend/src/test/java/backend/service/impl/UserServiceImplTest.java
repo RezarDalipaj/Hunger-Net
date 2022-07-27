@@ -1,5 +1,6 @@
 package backend.service.impl;
 
+import backend.customException.InvalidDataException;
 import backend.dto.UserDto;
 import backend.model.Status;
 import backend.model.User;
@@ -28,6 +29,7 @@ class UserServiceImplTest {
     private PasswordEncoder bcryptEncoder;
     private OrderService orderService;
     private UserServiceImpl userService;
+
     @BeforeEach
     void setUp() {
         userRepository = Mockito.mock(UserRepository.class);
@@ -44,16 +46,11 @@ class UserServiceImplTest {
                 , restaurantService, menuTypeRepository, bcryptEncoder, orderService);
     }
     @Test
-    void user_savee_returns_user_dto_when_saved_successfully() throws Exception{
+    void user_update_returns_user_dto_when_updated_successfully() throws Exception{
         UserDto userDto = new UserDto();
         userDto.setUserName("new_user");
         userDto.setPassword("new_user");
         userDto.setId(1);
-        userDto.setFirstName("new_user");
-        userDto.setLastName("new_user");
-        userDto.setEmail("new_user");
-        userDto.setPhoneNumber("451551");
-        userDto.setBalance(1000.0);
         Status status = new Status();
         status.setStatus("VALID");
 
@@ -75,16 +72,10 @@ class UserServiceImplTest {
         assertEquals(userDto.getUserName(), newUser.getUserName());
     }
     @Test
-    void user_update_returns_user_dto_when_updated_successfully() throws Exception{
+    void user_update_throws_Exception_when_username_is_short() throws Exception{
         UserDto userDto = new UserDto();
-        userDto.setUserName("new_user");
-        userDto.setPassword("new_user");
+        userDto.setUserName("ok");
         userDto.setId(1);
-        userDto.setFirstName("new_user");
-        userDto.setLastName("new_user");
-        userDto.setEmail("new_user");
-        userDto.setPhoneNumber("451551");
-        userDto.setBalance(1000.0);
         Status status = new Status();
         status.setStatus("VALID");
 
@@ -102,7 +93,11 @@ class UserServiceImplTest {
         Mockito.when(bcryptEncoder.encode(any())).thenReturn("test");
         Mockito.when(statusRepository.findStatusByStatus(any())).thenReturn(status);
 
-        UserDto newUser = userService.save(userDto);
-        assertEquals(userDto.getUserName(), newUser.getUserName());
+        Class<? extends Throwable> InvalidDataException = null;
+        assertThrows(InvalidDataException);
     }
+
+    private void assertThrows(Class<? extends Throwable> invalidDataException) {
+    }
+
 }

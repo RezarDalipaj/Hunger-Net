@@ -5,9 +5,7 @@ import backend.dto.RestaurantDto;
 import backend.dto.RoleDto;
 import backend.dto.UserDto;
 import backend.model.Restaurant;
-import backend.model.Role;
 import backend.model.User;
-import backend.repository.RoleRepository;
 import backend.service.AdminService;
 import backend.service.RestaurantService;
 import org.slf4j.Logger;
@@ -24,14 +22,12 @@ import org.springframework.stereotype.Service;
 public class AdminServiceImpl implements AdminService {
     private final UserServiceImpl userService;
     private final RestaurantService restaurantService;
-    private final RoleRepository roleRepository;
 
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    public AdminServiceImpl(UserServiceImpl userService, RestaurantService restaurantService, RoleRepository roleRepository){
+    public AdminServiceImpl(UserServiceImpl userService, RestaurantService restaurantService){
         this.userService = userService;
         this.restaurantService = restaurantService;
-        this.roleRepository = roleRepository;
     }
     // saving or updating user for admin (roles, restaurant)
     @Override
@@ -58,8 +54,10 @@ public class AdminServiceImpl implements AdminService {
                 restaurant = restaurantService.findByName(adminDto.getRestaurant());
             if (restaurant != null)
                 idRestaurant = restaurant.getId();
-            else
+            else {
+                logger.warn("Restaurant does not exist");
                 return convertToAdminDto(userDtoSave);
+            }
             //setting restaurant
             return saveRestaurant(userDtoSave,adminDto,idRestaurant);
     }
@@ -76,16 +74,6 @@ public class AdminServiceImpl implements AdminService {
             user = userService.setRoles(user, roleDto);
             userDtoSave = userService.convertUserToDto(user);
             return userDtoSave;
-        }
-        //remove added client role
-        Role role = roleRepository.findRoleByRole("CLIENT");
-        if (user.getRoles().size()>1 && user.getRoles().contains(role)
-                && (adminDto.getRoles() == null || adminDto.getRoles().isEmpty()))
-        {
-            role.getUsers().remove(user);
-            user.getRoles().remove(role);
-            roleRepository.save(role);
-            userService.saveFromRepository(user);
         }
         return userDtoSave;
     }

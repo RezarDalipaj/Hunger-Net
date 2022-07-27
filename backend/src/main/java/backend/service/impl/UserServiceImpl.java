@@ -112,28 +112,34 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> findAllWithoutAdmin(){
         Role role1 = roleRepository.findRoleByRole("RESTAURANT_MANAGER");
         Role role2 = roleRepository.findRoleByRole("CLIENT");
+        Role roleAdmin = roleRepository.findRoleByRole("ADMIN");
         Collection<User> managers;
         Collection<User> clients;
         if (role1.getUsers() == null && role2.getUsers() == null)
             return new ArrayList<>();
         managers = role1.getUsers();
         clients = role2.getUsers();
-        List<UserDto> listManagers = managers.stream().map(this::convertUserToDto).collect(Collectors.toList());
-        List<UserDto> listClients = clients.stream().map(this::convertUserToDto).collect(Collectors.toList());
-        listManagers.addAll(listClients);
-        return listManagers;
+        managers.addAll(clients);
+        managers.removeIf(user -> user.getRoles().contains(roleAdmin));
+        return managers.stream().map(this::convertUserToDto).collect(Collectors.toList());
     }
     @Override
     public List<UserDto> findAllByRole(String role) throws Exception{
         Role role1 = roleRepository.findRoleByRole(role);
+        Role role2 = roleRepository.findRoleByRole("ADMIN");
         if (role1 == null)
             throw new NullPointerException("ROLE " + role);
         if (role1.getRole().equals("ADMIN"))
             throw new InvalidDataException("Cannot view users with role ADMIN");
         if (role1.getUsers() == null)
             throw new NullPointerException("USERS WITH ROLE" + role);
-        Collection<User> users = role1.getUsers();
-        return users.stream().map(this::convertUserToDto).collect(Collectors.toList());
+        Collection<User> userCollection = new ArrayList<>();
+        for (User user: role1.getUsers()) {
+            if (!user.getRoles().contains(role2))
+                userCollection.add(user);
+        }
+        return userCollection.stream().map(this::convertUserToDto).collect(Collectors.toList());
+
     }
     public List<UserDto> findAll() {
         return userRepository.findAll().stream().map(this::convertUserToDto).collect(Collectors.toList());
@@ -170,22 +176,6 @@ public class UserServiceImpl implements UserService {
                     orderService.deleteByIdManager(order.getOrder_id());
             }
         }
-    }
-    @Override
-    public List<UserDto> deleteAll() {
-        List<UserDto> userDtoList = findAll();
-        List<User> userList = userRepository.findAll();
-        Status status = statusRepository.findStatusByStatus("DELETED");
-        for (User user: userList) {
-            deletePossibleRestaurants(user);
-            deleteOrdersOfAUser(user);
-            removeUserFromPreviousRoles(user);
-            user.setStatus(status);
-            user.getUserDetails().setStatus(status);
-            userDetailsRepository.save(user.getUserDetails());
-            userRepository.save(user);
-        }
-        return userDtoList;
     }
     public UserDto convertUserToDto(User user) {
         UserDto userDTO = new UserDto();

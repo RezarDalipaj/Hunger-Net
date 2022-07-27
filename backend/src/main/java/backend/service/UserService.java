@@ -22,7 +22,6 @@ public interface UserService {
     List<UserDto> findAllValid();
     Integer nrOfUsers();
     void deleteById(Integer id);
-    List<UserDto> deleteAll();
     User setRoles(User user, RoleDto roleDto) throws Exception;
     UserDto findUserByUserName(String username);
     User findByUserName(String username);

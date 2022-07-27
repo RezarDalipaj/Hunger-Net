@@ -9,6 +9,8 @@ import backend.repository.RoleRepository;
 import backend.repository.StatusRepository;
 import backend.service.RestaurantService;
 import backend.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -29,6 +31,8 @@ public class RestaurantServiceImpl implements RestaurantService {
     private final RoleRepository roleRepository;
     private final StatusRepository statusRepository;
     private final MenuServiceImpl menuService;
+
+    private final Logger logger = LoggerFactory.getLogger(RestaurantServiceImpl.class);
     RestaurantServiceImpl(RestaurantRepository restaurantRepository, UserService userService
             , RoleRepository roleRepository, StatusRepository statusRepository
             , MenuServiceImpl menuService){
@@ -173,8 +177,10 @@ public class RestaurantServiceImpl implements RestaurantService {
             if (restaurant.getMenuList() != null) {
                 List<Menu> menuList = restaurant.getMenuList();
                 for (Menu menu : menuList) {
-                    if (!menu.getStatus().getStatus().equals("DELETED"))
+                    if (!menu.getStatus().getStatus().equals("DELETED")) {
+                        logger.info("Deleting menu...");
                         menuService.deleteById(menu.getId());
+                    }
                 }
             }
         }
@@ -185,6 +191,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         deletePossibleMenus(restaurant);
         restaurant.setStatus(status);
         restaurantRepository.save(restaurant);
+        logger.info("Deleted restaurant with id " + id);
     }
     @Override
     public List<RestaurantDto> deleteAll() {
@@ -197,6 +204,7 @@ public class RestaurantServiceImpl implements RestaurantService {
             restaurant.setStatus(status);
             restaurantRepository.save(restaurant);
         }
+        logger.info("deleted all restaurants");
         return restaurantDtoList;
     }
     private RestaurantDto convertRestaurantToDto(Restaurant restaurant){
@@ -274,6 +282,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         if (restaurantDto.getName().length()<3)
             throw new InvalidDataException("Restaurant name cannot be that short");
         restaurant.setName(restaurantDto.getName());
+        logger.info("Added new restaurant in db");
         return restaurant;
     }
     private Restaurant convertDtoToRestaurantAdd(RestaurantDto restaurantDto) throws Exception {
@@ -307,6 +316,7 @@ public class RestaurantServiceImpl implements RestaurantService {
             restaurant.setManager(userService.findByUserName(restaurantDto.getManager()));
         if (restaurantDto.getName()!=null && !restaurant.getName().equals(restaurantDto.getName()))
             return setName(restaurantDto,restaurant);
+        logger.info("Updated restaurant with id " + restaurant.getId());
         return restaurant;
     }
 }

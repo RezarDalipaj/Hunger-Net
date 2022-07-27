@@ -94,9 +94,4 @@ public class UserController {
         userService.deleteById(id);
         return ResponseEntity.ok(userDTO);
     }
-    @DeleteMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<?> deleteAll() {
-            return ResponseEntity.ok(userService.deleteAll());
-    }
 }

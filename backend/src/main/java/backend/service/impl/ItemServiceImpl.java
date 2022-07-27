@@ -8,6 +8,8 @@ import backend.repository.StatusRepository;
 import backend.service.ItemService;
 import backend.service.MenuService;
 import backend.service.OrderService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Lazy;
@@ -28,7 +30,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final StatusRepository statusRepository;
     private final OrderService orderService;
-
+    private final Logger logger = LoggerFactory.getLogger(RestaurantServiceImpl.class);
     public ItemServiceImpl(MenuService menuService, ItemRepository itemRepository
             , StatusRepository statusRepository,@Lazy OrderService orderService) {
         this.menuService = menuService;
@@ -117,8 +119,10 @@ public class ItemServiceImpl implements ItemService {
                 Order order = orderItem.getOrder();
                 if (!order.getStatus().getStatus().equals("DELIVERED")
                         && !order.getStatus().getStatus().equals("REJECTED")
-                        && !order.getStatus().getStatus().equals("DELETED"))
+                        && !order.getStatus().getStatus().equals("DELETED")) {
                     orderService.deleteByIdManager(order.getOrder_id());
+                    logger.info("Deleting order of this item");
+                }
             }
         }
     }
@@ -131,6 +135,7 @@ public class ItemServiceImpl implements ItemService {
         Status status = statusRepository.findStatusByStatus("DELETED");
         deleteOrdersOfAnItem(item);
         item.setStatus(status);
+        logger.info("Deleted order with id " + id);
         itemRepository.save(item);
     }
     @Override
@@ -143,6 +148,7 @@ public class ItemServiceImpl implements ItemService {
             item.setStatus(status);
             itemRepository.save(item);
         }
+        logger.info("Deleted all items");
         return itemDtoList;
     }
     //saving and updating items
@@ -175,6 +181,7 @@ public class ItemServiceImpl implements ItemService {
         setPrice(item,itemDto);
         setStock(item,itemDto);
         setMenu(item,itemDto);
+        logger.info("Added new item to db");
         return item;
     }
     private Item convertDtoToItemUpdate(ItemDto itemDto) throws Exception{
@@ -189,6 +196,7 @@ public class ItemServiceImpl implements ItemService {
             setStock(item,itemDto);
         if (itemDto.getMenuId()!=null)
             setMenu(item,itemDto);
+        logger.info("Updated item with id " + itemDto.getId());
         return item;
     }
     //checking price validity
