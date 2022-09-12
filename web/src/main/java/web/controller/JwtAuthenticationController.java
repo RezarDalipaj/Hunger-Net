@@ -4,7 +4,6 @@ import backend.configuration.security.config.JwtTokenUtil;
 import backend.configuration.security.model.JwtRequest;
 import backend.configuration.security.model.JwtResponse;
 import backend.configuration.security.service.JwtUserDetailsService;
-import backend.dto.AdminDto;
 import backend.dto.RoleDto;
 import backend.dto.UserDto;
 import backend.model.Role;
@@ -59,6 +58,9 @@ public class JwtAuthenticationController {
 		String token = request.getHeader("Authorization").substring(7);
 		return jwtTokenUtil.getUsernameFromToken(token);
 	}
+	public String getToken(HttpServletRequest request){
+		return request.getHeader("Authorization").substring(7);
+	}
 	public boolean isAdmin(HttpServletRequest request){
 		String username = usernameFromToken(request);
 		User user = userService.findByUserName(username);
@@ -78,13 +80,6 @@ public class JwtAuthenticationController {
 		userDto.setId(id);
 		return ResponseEntity.ok(userDetailsService.put(userDto));
 	}
-    @RequestMapping(value = "/users/{id}/update", method = RequestMethod.PUT)
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<?> update(@PathVariable(name = "id") Integer id
-            ,@RequestBody AdminDto adminDto) throws Exception {
-        adminDto.setId(id);
-        return ResponseEntity.ok(userDetailsService.putAdmin(adminDto));
-    }
 	@PutMapping("/users/{id}/update/role")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public UserDto changeRoles(@PathVariable(name = "id") Integer id

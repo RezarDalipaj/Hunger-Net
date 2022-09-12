@@ -342,7 +342,6 @@ public class UserServiceImpl implements UserService {
     public User setRoles(User user, RoleDto roleDto) throws Exception{
         List<String> roles;
         if (roleDto.getRoles() != null && !roleDto.getRoles().isEmpty()) {
-            removeUserFromPreviousRoles(user);
             roles = roleDto.getRoles();
             Collection<Role> roleCollection = new ArrayList<>();
             addRoles(roles, user, roleCollection);
@@ -359,10 +358,14 @@ public class UserServiceImpl implements UserService {
         }
     }
     public void addRoles(List<String> roles, User user, Collection<Role> roleCollection) throws Exception{
+        int i = 0;
         for (String string : roles) {
             Role role1 = roleRepository.findRoleByRole(string);
             if (role1 == null)
                 throw new InvalidDataException("Role does not exist");
+            i++;
+            if (i == 1)
+                removeUserFromPreviousRoles(user);
             addUsersToRoles(user, role1);
             roleCollection.add(role1);
             roleRepository.save(role1);

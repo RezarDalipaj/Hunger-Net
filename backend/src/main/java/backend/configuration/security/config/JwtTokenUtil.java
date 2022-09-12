@@ -44,12 +44,11 @@ public class JwtTokenUtil implements Serializable {
 	public Date getExpirationDateFromToken(String token) {
 		return getClaimFromToken(token, Claims::getExpiration);
 	}
-
 	public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
 		final Claims claims = getAllClaimsFromToken(token);
 		return claimsResolver.apply(claims);
 	}
-    //for retrieveing any information from token we will need the secret key
+    //for retrieving any information from token we will need the secret key
 	private Claims getAllClaimsFromToken(String token) {
 		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
 	}
@@ -59,7 +58,6 @@ public class JwtTokenUtil implements Serializable {
 		final Date expiration = getExpirationDateFromToken(token);
 		return expiration.before(new Date());
 	}
-
 	//generate token for user
 	public String generateToken(UserDetails userDetails) {
 		Map<String, Object> claims = new HashMap<>();
