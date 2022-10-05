@@ -1,7 +1,7 @@
 package web.controller;
 
 import backend.customException.InvalidDataException;
-import backend.dto.MenuDto;
+import backend.model.dto.MenuDto;
 import backend.model.Menu;
 import backend.model.Restaurant;
 import backend.service.MenuService;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @RestController
 @ComponentScan(basePackages = {"backend"})

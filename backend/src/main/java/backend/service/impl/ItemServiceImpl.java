@@ -1,7 +1,7 @@
 package backend.service.impl;
 
 import backend.customException.InvalidDataException;
-import backend.dto.ItemDto;
+import backend.model.dto.ItemDto;
 import backend.model.*;
 import backend.repository.ItemRepository;
 import backend.repository.StatusRepository;

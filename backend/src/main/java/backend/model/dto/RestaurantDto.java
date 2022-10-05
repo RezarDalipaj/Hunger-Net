@@ -1,4 +1,4 @@
-package backend.dto;
+package backend.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.stereotype.Component;

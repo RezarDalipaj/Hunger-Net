@@ -1,4 +1,4 @@
-package backend.dto;
+package backend.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;

@@ -1,13 +1,12 @@
-package backend.dto;
+package backend.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-
 @Component
-public class AdminDto {
+public class UserDto {
     @JsonIgnore
     private Integer id;
     private String userName;
@@ -17,16 +16,15 @@ public class AdminDto {
     private String lastName;
     private String phoneNumber;
     private String email;
-    private List<String> roles;
-    private String restaurant;
     private Double balance;
-
-    public Integer getId() {
-        return id;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private List<String> roles;
+    public String getPassword() {
+        return password;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getUserName() {
@@ -35,14 +33,6 @@ public class AdminDto {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getFirstName() {
@@ -60,6 +50,7 @@ public class AdminDto {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -85,12 +76,12 @@ public class AdminDto {
         this.roles = roles;
     }
 
-    public String getRestaurant() {
-        return restaurant;
+    public Integer getId() {
+        return id;
     }
 
-    public void setRestaurant(String restaurant) {
-        this.restaurant = restaurant;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Double getBalance() {

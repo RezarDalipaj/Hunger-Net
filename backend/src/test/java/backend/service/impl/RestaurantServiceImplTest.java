@@ -1,6 +1,6 @@
 package backend.service.impl;
 
-import backend.dto.RestaurantDto;
+import backend.model.dto.RestaurantDto;
 import backend.model.Status;
 import backend.repository.RestaurantRepository;
 import backend.repository.RoleRepository;

@@ -1,8 +1,7 @@
 package backend.service;
 
-import backend.customException.InvalidDataException;
-import backend.dto.RoleDto;
-import backend.dto.UserDto;
+import backend.model.dto.RoleDto;
+import backend.model.dto.UserDto;
 import backend.model.User;
 import org.springframework.context.annotation.ComponentScan;
 

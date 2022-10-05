@@ -1,7 +1,7 @@
 package web.controller;
 
-import backend.dto.OrderDto;
-import backend.dto.OrderStatusDto;
+import backend.model.dto.OrderDto;
+import backend.model.dto.OrderStatusDto;
 import backend.model.Menu;
 import backend.model.Order;
 import backend.model.Restaurant;

@@ -1,12 +1,12 @@
 package backend.service.impl;
 
-import backend.customException.InvalidDataException;
-import backend.dto.UserDto;
+import backend.model.dto.UserDto;
 import backend.model.Status;
 import backend.model.User;
 import backend.model.UserDetails;
 import backend.repository.*;
 import backend.service.OrderService;
+import backend.util.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -29,6 +29,7 @@ class UserServiceImplTest {
     private PasswordEncoder bcryptEncoder;
     private OrderService orderService;
     private UserServiceImpl userService;
+    private UserMapper userMapper;
 
     @BeforeEach
     void setUp() {
@@ -41,9 +42,10 @@ class UserServiceImplTest {
         menuTypeRepository = Mockito.mock(MenuTypeRepository.class);
         bcryptEncoder = Mockito.mock(PasswordEncoder.class);
         orderService = Mockito.mock(OrderService.class);
+        userMapper = Mockito.mock(UserMapper.class);
         userService = new UserServiceImpl(userRepository, userDetailsRepository
                 , roleRepository, statusRepository, orderStatusRepository
-                , restaurantService, menuTypeRepository, bcryptEncoder, orderService);
+                , restaurantService, menuTypeRepository, bcryptEncoder, orderService, userMapper);
     }
     @Test
     void user_update_returns_user_dto_when_updated_successfully() throws Exception{

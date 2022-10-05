@@ -1,9 +1,9 @@
 package backend.service.impl;
 
 import backend.customException.InvalidDataException;
-import backend.dto.OrderDto;
-import backend.dto.OrderItemDto;
-import backend.dto.OrderStatusDto;
+import backend.model.dto.OrderDto;
+import backend.model.dto.OrderItemDto;
+import backend.model.dto.OrderStatusDto;
 import backend.model.*;
 import backend.repository.*;
 import backend.service.*;

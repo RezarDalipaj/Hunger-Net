@@ -1,13 +1,14 @@
 package backend.service.impl;
 
-import backend.dto.AdminDto;
-import backend.dto.RestaurantDto;
-import backend.dto.RoleDto;
-import backend.dto.UserDto;
+import backend.model.dto.AdminDto;
+import backend.model.dto.RestaurantDto;
+import backend.model.dto.RoleDto;
+import backend.model.dto.UserDto;
 import backend.model.Restaurant;
 import backend.model.User;
 import backend.service.AdminService;
 import backend.service.RestaurantService;
+import backend.util.UserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -22,12 +23,14 @@ import org.springframework.stereotype.Service;
 public class AdminServiceImpl implements AdminService {
     private final UserServiceImpl userService;
     private final RestaurantService restaurantService;
+    private final UserMapper userMapper;
 
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    public AdminServiceImpl(UserServiceImpl userService, RestaurantService restaurantService){
+    public AdminServiceImpl(UserServiceImpl userService, RestaurantService restaurantService, UserMapper userMapper){
         this.userService = userService;
         this.restaurantService = restaurantService;
+        this.userMapper = userMapper;
     }
     // saving or updating user for admin (roles, restaurant)
     @Override
@@ -72,7 +75,7 @@ public class AdminServiceImpl implements AdminService {
         if (hasRoles) {
             roleDto.setRoles(adminDto.getRoles());
             user = userService.setRoles(user, roleDto);
-            userDtoSave = userService.convertUserToDto(user);
+            userDtoSave = userMapper.convertUserToDto(user);
             return userDtoSave;
         }
         return userDtoSave;

@@ -1,7 +1,7 @@
 package backend.service;
 
-import backend.dto.ItemDto;
-import backend.dto.MenuDto;
+import backend.model.dto.ItemDto;
+import backend.model.dto.MenuDto;
 import backend.model.Menu;
 
 import java.util.List;

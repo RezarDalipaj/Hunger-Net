@@ -1,12 +1,13 @@
 package backend.service.impl;
 
 import backend.customException.InvalidDataException;
-import backend.dto.RoleDto;
-import backend.dto.UserDto;
+import backend.model.dto.RoleDto;
+import backend.model.dto.UserDto;
 import backend.model.*;
 import backend.repository.*;
 import backend.service.OrderService;
 import backend.service.UserService;
+import backend.util.UserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -36,11 +37,12 @@ public class UserServiceImpl implements UserService {
     private final MenuTypeRepository menuTypeRepository;
     private final PasswordEncoder bcryptEncoder;
     private final OrderService orderService;
+    private final UserMapper userMapper;
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     UserServiceImpl(UserRepository userRepository, UserDetailsRepository userDetailsRepository
             , RoleRepository roleRepository, StatusRepository statusRepository
             , OrderStatusRepository orderStatusRepository, @Lazy RestaurantServiceImpl restaurantService
-            , MenuTypeRepository menuTypeRepository, PasswordEncoder bcryptEncoder,@Lazy OrderService orderService) {
+            , MenuTypeRepository menuTypeRepository, PasswordEncoder bcryptEncoder, @Lazy OrderService orderService, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.userDetailsRepository = userDetailsRepository;
         this.roleRepository = roleRepository;
@@ -50,6 +52,7 @@ public class UserServiceImpl implements UserService {
         this.menuTypeRepository = menuTypeRepository;
         this.bcryptEncoder = bcryptEncoder;
         this.orderService = orderService;
+        this.userMapper = userMapper;
     }
     //saving or updating user
     public UserDto save(UserDto userDto) throws Exception {
@@ -65,13 +68,13 @@ public class UserServiceImpl implements UserService {
             userDetailsRepository.save(user.getUserDetails());
             userRepository.save(user);
             logger.info("Saved User in database");
-            return convertUserToDto(user);
+            return userMapper.convertUserToDto(user);
     }
     public UserDto saveFromRepository(User user){
         Status status = statusRepository.findStatusByStatus("VALID");
         user.setStatus(status);
         user = userRepository.save(user);
-        return convertUserToDto(user);
+        return userMapper.convertUserToDto(user);
     }
     @Override
     public UserDto findById(Integer id) {
@@ -79,7 +82,7 @@ public class UserServiceImpl implements UserService {
         if (user.isPresent()){
             User user1 = user.get();
             if (user1.getStatus().getStatus().equals("VALID"))
-                return convertUserToDto(user1);
+                return userMapper.convertUserToDto(user1);
             else
                 throw new NullPointerException("USER WITH ID " + id);
         }
@@ -105,7 +108,7 @@ public class UserServiceImpl implements UserService {
         if (status.getUsers() == null)
             throw new NullPointerException("USERS");
         List<User> users = status.getUsers();
-        return users.stream().map(this::convertUserToDto).collect(Collectors.toList());
+        return users.stream().map(userMapper::convertUserToDto).collect(Collectors.toList());
     }
     //all users without admins
     @Override
@@ -121,7 +124,7 @@ public class UserServiceImpl implements UserService {
         clients = role2.getUsers();
         managers.addAll(clients);
         managers.removeIf(user -> user.getRoles().contains(roleAdmin));
-        return managers.stream().map(this::convertUserToDto).collect(Collectors.toList());
+        return managers.stream().map(userMapper::convertUserToDto).collect(Collectors.toList());
     }
     @Override
     public List<UserDto> findAllByRole(String role) throws Exception{
@@ -138,11 +141,11 @@ public class UserServiceImpl implements UserService {
             if (!user.getRoles().contains(role2))
                 userCollection.add(user);
         }
-        return userCollection.stream().map(this::convertUserToDto).collect(Collectors.toList());
+        return userCollection.stream().map(userMapper::convertUserToDto).collect(Collectors.toList());
 
     }
     public List<UserDto> findAll() {
-        return userRepository.findAll().stream().map(this::convertUserToDto).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(userMapper::convertUserToDto).collect(Collectors.toList());
     }
     @Override
     public Integer nrOfUsers(){
@@ -176,20 +179,6 @@ public class UserServiceImpl implements UserService {
                     orderService.deleteByIdManager(order.getOrder_id());
             }
         }
-    }
-    public UserDto convertUserToDto(User user) {
-        UserDto userDTO = new UserDto();
-        userDTO.setId(user.getId());
-        userDTO.setUserName(user.getUserName());
-        userDTO.setPassword(user.getPassword());
-        userDTO.setBalance(user.getBalance());
-        if(user.getUserDetails() != null){
-            userDTO.setFirstName(user.getUserDetails().getFirstName());
-            userDTO.setLastName(user.getUserDetails().getLastName());
-            userDTO.setEmail(user.getUserDetails().getEmail());
-            userDTO.setPhoneNumber(user.getUserDetails().getPhoneNumber());
-        }
-        return getRoles(user, userDTO);
     }
     public UserDto getRoles(User u, UserDto userDTO){
         Collection<Role> roleCollection = u.getRoles();
@@ -436,7 +425,7 @@ public class UserServiceImpl implements UserService {
     public UserDto findUserByUserName(String username) {
         User user = userRepository.findUserByUserName(username);
         if(user != null && user.getStatus().getStatus().equals("VALID"))
-            return convertUserToDto(user);
+            return userMapper.convertUserToDto(user);
         else
             return null;
     }

@@ -1,6 +1,6 @@
 package web.controller;
 
-import backend.dto.RestaurantDto;
+import backend.model.dto.RestaurantDto;
 import backend.model.Restaurant;
 import backend.service.RestaurantService;
 import org.springframework.boot.autoconfigure.domain.EntityScan;

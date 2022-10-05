@@ -1,6 +1,6 @@
 package backend.service;
 
-import backend.dto.OrderItemDto;
+import backend.model.dto.OrderItemDto;
 import backend.model.OrderItem;
 
 public interface OrderItemService {

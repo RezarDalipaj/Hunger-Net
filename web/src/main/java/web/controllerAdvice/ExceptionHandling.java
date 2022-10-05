@@ -1,7 +1,7 @@
 package web.controllerAdvice;
 
 import backend.customException.*;
-import backend.dto.ErrorDto;
+import backend.model.dto.ErrorDto;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

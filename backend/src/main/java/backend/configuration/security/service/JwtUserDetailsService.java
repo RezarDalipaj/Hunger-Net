@@ -1,7 +1,7 @@
 package backend.configuration.security.service;
 
-import backend.dto.AdminDto;
-import backend.dto.UserDto;
+import backend.model.dto.AdminDto;
+import backend.model.dto.UserDto;
 import backend.model.Role;
 import backend.service.AdminService;
 import backend.service.UserService;

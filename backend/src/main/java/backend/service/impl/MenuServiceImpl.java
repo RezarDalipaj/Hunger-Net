@@ -1,8 +1,8 @@
 package backend.service.impl;
 
 import backend.customException.InvalidDataException;
-import backend.dto.ItemDto;
-import backend.dto.MenuDto;
+import backend.model.dto.ItemDto;
+import backend.model.dto.MenuDto;
 import backend.model.*;
 import backend.repository.MenuRepository;
 import backend.repository.MenuTypeRepository;

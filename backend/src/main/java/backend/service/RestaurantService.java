@@ -1,6 +1,6 @@
 package backend.service;
 
-import backend.dto.RestaurantDto;
+import backend.model.dto.RestaurantDto;
 import backend.model.Restaurant;
 import org.springframework.context.annotation.ComponentScan;
 

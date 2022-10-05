@@ -1,6 +1,6 @@
 package backend.service.impl;
 
-import backend.dto.OrderItemDto;
+import backend.model.dto.OrderItemDto;
 import backend.model.OrderItem;
 import backend.repository.OrderItemRepository;
 import backend.service.OrderItemService;

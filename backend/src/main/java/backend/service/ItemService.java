@@ -1,6 +1,6 @@
 package backend.service;
 
-import backend.dto.ItemDto;
+import backend.model.dto.ItemDto;
 import backend.model.Item;
 
 import java.util.List;
